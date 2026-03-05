@@ -69,7 +69,7 @@ string WriteProgress(decimal? n1, decimal? n2, int? sel, decimal? res)
     string w1 = n1 == null ? "_" : $"{n1}";
     string ws = sel == null ? "_" : $"{options[sel.Value]}";
     string w2 = n2 == null ? "_" : $"{n2}";
-    string wr = res == null ? "_" : $"{res}";
+    string wr = res == null ? "_" : $"{(res == decimal.MaxValue ? "Indefinido" : res)}";
     Console.WriteLine($"{w1} {ws} {w2} = {wr}");
     return $"{w1} {ws} {w2} = {wr}";
 }
@@ -121,7 +121,9 @@ decimal? Calculate(decimal? n1, decimal? n2, int? operation)
         case 0: return n1 + n2;
         case 1: return n1 - n2;
         case 2: return n1 * n2;
-        case 3: return n1 / n2;
+        case 3:
+            if (n2 == 0) return decimal.MaxValue;
+            else return n1 / n2;
         default: return null;
     }
 }
@@ -138,7 +140,7 @@ void ShowHistory()
 {
     WriteTitle();
     System.Console.WriteLine("Histórico:");
-    foreach(string s in history)
+    foreach (string s in history)
     {
         Console.WriteLine(s);
     }
