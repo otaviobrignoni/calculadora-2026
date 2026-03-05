@@ -1,97 +1,110 @@
 ﻿string[] options = ["+", "-", "×", "÷"];
-float? num1 = null;
-float? num2 = null;
+decimal? num1 = null;
+decimal? num2 = null;
 int? select = null;
-float? result = null;
+decimal? result = null;
 while (true)
 {
-    if (num1 == null && select == null && num2 == null)
-    {
-        WriteThing(num1, select, num2, result);
-        Console.Write("Digite um número: ");
-        num1 = float.Parse(Console.ReadLine());
-        continue;
-    }
-    else if (num1 != null && select == null && num2 == null)
-    {
-        select = ShowSelect();
-        continue;
-    }
-    else if (num1 != null && select != null && num2 == null)
-    {
-        WriteThing(num1, select, num2, result);
-        Console.Write("Digite um número: ");
-        num2 = float.Parse(Console.ReadLine());
-        continue;
-    }
+    WriteTitle();
+    WriteProgress(num1, num2, select, result);
+    num1 = GetNumber();
+    select = Select();
+    num2 = GetNumber();
+    result = Calculate(num1, num2, select);
+    WriteTitle();
+    WriteProgress(num1, num2, select, result);
+
+    if (!Continue()) return;
     else
     {
-        switch (select)
-        {
-            case 0: result = num1.Value + num2.Value; break;
-            case 1: result = num1.Value - num2.Value; break;
-            case 2: result = num1.Value * num2.Value; break;
-            case 3: result = num1.Value / num2.Value; break;
-        }
-        WriteThing(num1, select, num2, result);
-        Console.WriteLine("Aperte ENTER para continuar ou ESC para sair...");
-        bool thing = true;
-        while (thing)
-        {
-            ConsoleKey key = Console.ReadKey(true).Key;
-            switch (key)
-            {
-                case ConsoleKey.Enter:
-                    num1 = null;
-                    num2 = null;
-                    select = null;
-                    result = null;
-                    thing = false;
-                    break;
-                case ConsoleKey.Escape: return;
-                default: continue;
-            }
-        }
-
+        num1 = null;
+        num2 = null;
+        select = null;
+        result = null;
     }
 }
-void WriteThing(float? n1, int? sel, float? n2, float? res)
+bool Continue()
 {
-    string w1 = n1 == null ? "__" : $"{n1}";
-    string ws = sel == null ? "__" : $"{options[sel.Value]}";
-    string w2 = n2 == null ? "__" : $"{n2}";
-    string wr = res == null ? "__" : $"{res}";
-    Console.Clear();
-    Console.WriteLine("Calculadora 2026");
-    Console.WriteLine($"{w1} {ws} {w2} = {wr}");
+    Console.WriteLine("Pressione ENTER para continuar ou ESC para sair...");
+    while (true)
+    {
+        ConsoleKey key = Console.ReadKey(true).Key;
+        switch (key)
+        {
+            case ConsoleKey.Enter: return true;
+            case ConsoleKey.Escape: return false; ;
+            default: continue;
+        }
+    }
 }
-int ShowSelect()
+void WriteTitle()
 {
-    int indexSelected = 0;
+    string title = "Calculadora 2026";
+    int MenuWidth = title.Length + 2;
+    int padding = (MenuWidth - title.Length) / 2;
+    Console.Clear();
+    Console.WriteLine("┌" + new string('─', MenuWidth) + "┐");
+    Console.WriteLine("│" + title.PadLeft(padding + title.Length).PadRight(MenuWidth) + "│");
+    Console.WriteLine("└" + new string('─', MenuWidth) + "┘");
+}
+string WriteProgress(decimal? n1, decimal? n2, int? sel, decimal? res)
+{
+    string w1 = n1 == null ? "_" : $"{n1}";
+    string ws = sel == null ? "_" : $"{options[sel.Value]}";
+    string w2 = n2 == null ? "_" : $"{n2}";
+    string wr = res == null ? "_" : $"{res}";
+    Console.WriteLine($"{w1} {ws} {w2} = {wr}");
+    return $"{w1} {ws} {w2} = {wr}";
+}
+int Select()
+{
+    int selectedIndex = 0;
     ConsoleKey key;
 
     while (true)
     {
-        WriteThing(num1, select, num2, result);
+        WriteTitle();
+        WriteProgress(num1, num2, select, result);
         for (int i = 0; i < options.Length; i++)
         {
-            if (i == indexSelected)
-                Console.WriteLine($"> {options[i]}");
-
-            else
-                Console.WriteLine($"  {options[i]}");
+            if (i == selectedIndex) Console.WriteLine($"> {options[i]}");
+            else Console.WriteLine($"  {options[i]}");
         }
-        Console.WriteLine("Selecione com as setas e presione enter...");
-        
+        Console.WriteLine("Selecione a operação desejada com as setas e pressione ENTER...");
         key = Console.ReadKey(true).Key;
 
         switch (key)
         {
-            case ConsoleKey.UpArrow: indexSelected = (indexSelected == 0) ? options.Length - 1 : indexSelected - 1; break;
+            case ConsoleKey.UpArrow: selectedIndex = (selectedIndex == 0) ? options.Length - 1 : selectedIndex - 1; break;
 
-            case ConsoleKey.DownArrow: indexSelected = (indexSelected + 1) % options.Length; break;
+            case ConsoleKey.DownArrow: selectedIndex = (selectedIndex + 1) % options.Length; break;
 
-            case ConsoleKey.Enter: return indexSelected;
+            case ConsoleKey.Enter: return selectedIndex;
         }
+    }
+}
+decimal GetNumber()
+{
+    decimal num;
+    WriteTitle();
+    WriteProgress(num1, num2, select, result);
+    Console.Write("Digite um número: ");
+    while (!decimal.TryParse(Console.ReadLine(), out num))
+    {
+        WriteTitle();
+        WriteProgress(num1, num2, select, result);
+        Console.Write("Valor inválido. Tente Novamente: ");
+    }
+    return num;
+}
+decimal? Calculate(decimal? n1, decimal? n2, int? operation)
+{
+    switch (operation)
+    {
+        case 0: return n1 + n2;
+        case 1: return n1 - n2;
+        case 2: return n1 * n2;
+        case 3: return n1 / n2;
+        default: return null;
     }
 }
