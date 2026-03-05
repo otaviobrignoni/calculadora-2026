@@ -3,6 +3,7 @@ decimal? num1 = null;
 decimal? num2 = null;
 int? select = null;
 decimal? result = null;
+List<string> history = [];
 while (true)
 {
     WriteTitle();
@@ -11,7 +12,7 @@ while (true)
     select = Select();
     if (select == 4)
     {
-        TimesTable(num1);
+        history.Add(TimesTable(num1));
         if (!Continue()) return;
         else
         {
@@ -27,7 +28,7 @@ while (true)
         num2 = GetNumber();
         result = Calculate(num1, num2, select);
         WriteTitle();
-        WriteProgress(num1, num2, select, result);
+        history.Add(WriteProgress(num1, num2, select, result));
     }
     if (!Continue()) return;
     else
@@ -40,15 +41,16 @@ while (true)
 }
 bool Continue()
 {
-    Console.WriteLine("Pressione ENTER para continuar ou ESC para sair...");
+    Console.WriteLine("Pressione ENTER para uma nova operação, H para ver o histórico ou ESC para sair...");
     while (true)
     {
         ConsoleKey key = Console.ReadKey(true).Key;
         switch (key)
         {
+            case ConsoleKey.H: ShowHistory(); break;
             case ConsoleKey.Enter: return true;
-            case ConsoleKey.Escape: return false; ;
-            default: continue;
+            case ConsoleKey.Escape: return false;
+            default: break;
         }
     }
 }
@@ -131,4 +133,14 @@ string TimesTable(decimal? n1)
         Console.WriteLine($"{n1} × {i} = {Calculate(n1, i, 2)}");
     }
     return $"Calculado tabuada do {n1}";
+}
+void ShowHistory()
+{
+    WriteTitle();
+    System.Console.WriteLine("Histórico:");
+    foreach(string s in history)
+    {
+        Console.WriteLine(s);
+    }
+    Console.WriteLine("Pressione ENTER para uma nova operação, H para ver o histórico ou ESC para sair...");
 }
