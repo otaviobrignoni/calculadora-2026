@@ -1,15 +1,15 @@
 ﻿string[] options = ["+", "-", "×", "÷"];
-float? num1 = null;
-float? num2 = null;
+decimal? num1 = null;
+decimal? num2 = null;
 int? select = null;
-float? result = null;
+decimal? result = null;
 while (true)
 {
     if (num1 == null && select == null && num2 == null)
     {
         WriteThing(num1, select, num2, result);
         Console.Write("Digite um número: ");
-        num1 = float.Parse(Console.ReadLine());
+        num1 = decimal.Parse(Console.ReadLine());
         continue;
     }
     else if (num1 != null && select == null && num2 == null)
@@ -21,7 +21,7 @@ while (true)
     {
         WriteThing(num1, select, num2, result);
         Console.Write("Digite um número: ");
-        num2 = float.Parse(Console.ReadLine());
+        num2 = decimal.Parse(Console.ReadLine());
         continue;
     }
     else
@@ -55,7 +55,7 @@ while (true)
 
     }
 }
-void WriteThing(float? n1, int? sel, float? n2, float? res)
+void WriteThing(decimal? n1, int? sel, decimal? n2, decimal? res)
 {
     string w1 = n1 == null ? "__" : $"{n1}";
     string ws = sel == null ? "__" : $"{options[sel.Value]}";
