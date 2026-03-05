@@ -1,4 +1,4 @@
-﻿string[] options = ["+", "-", "×", "÷"];
+﻿string[] options = ["+", "-", "×", "÷", "×T"];
 decimal? num1 = null;
 decimal? num2 = null;
 int? select = null;
@@ -9,11 +9,26 @@ while (true)
     WriteProgress(num1, num2, select, result);
     num1 = GetNumber();
     select = Select();
-    num2 = GetNumber();
-    result = Calculate(num1, num2, select);
-    WriteTitle();
-    WriteProgress(num1, num2, select, result);
-
+    if (select == 4)
+    {
+        TimesTable(num1);
+        if (!Continue()) return;
+        else
+        {
+            num1 = null;
+            num2 = null;
+            select = null;
+            result = null;
+            continue;
+        }
+    }
+    else
+    {
+        num2 = GetNumber();
+        result = Calculate(num1, num2, select);
+        WriteTitle();
+        WriteProgress(num1, num2, select, result);
+    }
     if (!Continue()) return;
     else
     {
@@ -107,4 +122,13 @@ decimal? Calculate(decimal? n1, decimal? n2, int? operation)
         case 3: return n1 / n2;
         default: return null;
     }
+}
+string TimesTable(decimal? n1)
+{
+    WriteTitle();
+    for (int i = 1; i <= 10; i++)
+    {
+        Console.WriteLine($"{n1} × {i} = {Calculate(n1, i, 2)}");
+    }
+    return $"Calculado tabuada do {n1}";
 }
